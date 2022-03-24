@@ -1,7 +1,8 @@
 # sds011
-**Manage SDS011 particulate matter sensors**
+**Manage SDS011 particulate matter sensor through CLI or golang librarys**
 
-* **v0.2.4**
+* CLI app: **v0.2.5**
+* Library: **v0.2.0**
 * Repo: [github.com/pepa65/sds011](https://github.com/pepa65/sds011)
 * After: [github.com/maker-bierzo/sds011](https://github.com/maker-bierzo/sds011)
 * Contact: pepa65 <pepa65@passchier.net>
@@ -12,7 +13,7 @@
 * Download from [Releases page](https://github.com/pepa65/sds011/releases)
 
 ```
-sds011 v0.2.4 - Manage SDS011 particulate matter sensors
+sds011 v0.2.5 - Manage SDS011 particulate matter sensors
 * Repo:      github.com/pepa65/sds011 <pepa65@passchier.net>
 * Usage:     sds011 [ARGUMENT...] [COMMAND]
   COMMAND:   help            Only show this help text (default command)
@@ -20,25 +21,25 @@ sds011 v0.2.4 - Manage SDS011 particulate matter sensors
              sleep           Set to Sleep state (only wake commands received)
              mode            Get the sensor's Mode (0: Active, 1: Query)
              active          Set to Active mode (each Duty cycle, a measurement
-                             happens automatically; pm will poll the next one)
+                              happens automatically; pm will poll the next one)
              query           Set to Query mode (Wake/Sleep states apply,
                              measurements need to be queried manually)
              pm              Get measurement (Active mode: spinup 30 seconds,
-                             Query mode: 10 seconds or spinup time)
-             duty [MINUTES]  Get or Set the Duty cycle length (0..30 minutes).
-                             0: 1.004 seconds, 1..30: uses 30 second spinup.
+                              Query mode: 10 seconds or spinup time)
+             duty [MINUTES]  Get or Set the Duty cycle length (0..30 minutes)
+                              0: 1.004 seconds, 1..30: uses 30 second spinup
              id [ID]         Get or Set the sensor's (2-byte) ID
              firmware        Get the sensor's firmware version
-      (All COMMANDs can be shortened by cutting off part of their tail end.)
+      All COMMANDs can be shortened by cutting off part of their tail end.
   ARGUMENT:  -h|--help            Only show this help text
              -d|--device DEVICE   The default Device is /dev/ttyUSB0
              -s|--spinup SECONDS  Fan spinup before a measurement (0..30)
              -n|--nocolor         No ANSI color codes in output
              -v|--verbose         Human-readable output
              -D|--debug           Show message passing to/from sensors
-      Environment variables SDS011_VERBOSE and SDS011_DEBUG can be set to 1,
-      SDS011_DEVICE to the targetted DEVICE, and SDS011_SPINUP to the intended
-      spinup time as an alternative to using the ARGUMENTs.
+      Environment variables SDS011_NOCOLOR, SDS011_VERBOSE and SDS011_DEBUG can
+      be set to 1, SDS011_DEVICE to the targetted DEVICE, and SDS011_SPINUP to
+      the intended spinup time as an alternative to using the ARGUMENTs.
 ```
 
 ## Build

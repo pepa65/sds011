@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	version        = "0.2.4"
+	version        = "0.2.5"
 	defDevice      = "/dev/ttyUSB0"
 	defSpinup      = 10
 	active    byte = 0
@@ -32,27 +32,27 @@ func usage(msg string) {
   ` + green + `COMMAND` + def + `:   ` + green + `help` + def + `            Only show this help text (default command)
              ` + green + `wake` + def + `            Set to Wake state (in Query mode: fan & laser on)
              ` + green + `sleep` + def + `           Set to Sleep state (only ` + green + `wake` + def + ` commands received)
-             ` + green + `mode` + def + `            Get the sensor's Mode (0: Active, 1: Query)
+             ` + green + `mode` + def + `            Get the sensor's Mode (` + cyan + `0` + def + `: Active, ` + cyan + `1` + def + `: Query)
              ` + green + `active` + def + `          Set to Active mode (each Duty cycle, a measurement
-                             happens automatically; ` + green + `pm` + def + ` will poll the next one)
+                              happens automatically; ` + green + `pm` + def + ` will poll the next one)
              ` + green + `query` + def + `           Set to Query mode (Wake/Sleep states apply,
                              measurements need to be queried manually)
              ` + green + `pm` + def + `              Get measurement (Active mode: spinup ` + cyan + `30` + def + ` seconds,
-                             Query mode: ` + cyan + strconv.Itoa(defSpinup) + def + ` seconds or ` + yellow+ `spinup` + def + ` time)
-             ` + green + `duty ` + def + `[` + cyan + `MINUTES` + def + `]  Get or Set the Duty cycle length (` + cyan + `0` + def + `..` + cyan + `30` + def + ` minutes).
-                             0: 1.004 seconds, 1..30: uses 30 second spinup.
+                              Query mode: ` + cyan + strconv.Itoa(defSpinup) + def + ` seconds or ` + yellow+ `spinup` + def + ` time)
+             ` + green + `duty ` + def + `[` + cyan + `MINUTES` + def + `]  Get or Set the Duty cycle length (` + cyan + `0` + def + `..` + cyan + `30` + def + ` minutes)
+                              ` + cyan + `0` + def + `: 1.004 seconds, ` + cyan + `1` + def + `..` + cyan + `30` + def + `: uses 30 second spinup
              ` + green + `id ` + def + `[` + cyan + `ID` + def + `]         Get or Set the sensor's (2-byte) ID
              ` + green + `firmware` + def + `        Get the sensor's firmware version
-      (All COMMANDs can be shortened by cutting off part of their tail end.)
+      All COMMANDs can be shortened by cutting off part of their tail end.
   ` + yellow + `ARGUMENT` + def + `:  ` + yellow + `-h` + def + `|` + yellow + `--help` + def + `            Only show this help text
              ` + yellow + `-d` + def + `|` + yellow + `--device ` + cyan + `DEVICE   ` + def + `The default Device is ` + cyan + defDevice + def + `
              ` + yellow + `-s` + def + `|` + yellow + `--spinup ` + cyan + `SECONDS` + def + `  Fan spinup before a measurement (` + cyan + `0` + def + `..` + cyan + `30` + def + `)
              ` + yellow + `-n` + def + `|` + yellow + `--nocolor` + def + `         No ANSI color codes in output
              ` + yellow + `-v` + def + `|` + yellow + `--verbose` + def + `         Human-readable output
              ` + yellow + `-D` + def + `|` + yellow + `--debug` + def + `           Show message passing to/from sensors
-      Environment variables ` + green + `SDS011_VERBOSE` + def + ` and ` + green + `SDS011_DEBUG` + def + ` can be set to ` + cyan + `1` + def + `,
-      ` + green + `SDS011_DEVICE` + def + ` to the targetted ` + cyan + `DEVICE` + def + `, and ` + green + `SDS011_SPINUP` + def + ` to the intended
-      ` + yellow + `spinup` + def + ` time as an alternative to using the ` + yellow + `ARGUMENT` + def + `s.`
+      Environment variables ` + green + `SDS011_NOCOLOR` + def + `, ` + green + `SDS011_VERBOSE` + def + ` and ` + green + `SDS011_DEBUG` + def + ` can
+      be set to ` + cyan + `1` + def + `, ` + green + `SDS011_DEVICE` + def + ` to the targetted ` + cyan + `DEVICE` + def + `, and ` + green + `SDS011_SPINUP` + def + ` to
+      the intended ` + yellow + `spinup` + def + ` time as an alternative to using the ` + yellow + `ARGUMENT` + def + `s.`
 	fmt.Println(help)
 	if msg != "" {
 		fmt.Printf("%sERROR%s: %s\n", red, def, msg)
