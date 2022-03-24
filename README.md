@@ -5,10 +5,12 @@
 * Repo: [github.com/pepa65/sds011](https://github.com/pepa65/sds011)
 * After: [github.com/maker-bierzo/sds011](https://github.com/maker-bierzo/sds011)
 * Contact: pepa65 <pepa65@passchier.net>
-* Install: `wget -qO- gobinaries.com/pepa65/sds011 |sh`
 * License: GPLv3 (c) 2022 github.com/pepa65
 
 ## CLI app usage
+* Install through GoBinaries: `wget -qO- gobinaries.com/pepa65/sds011 |sh`
+* Download from [Releases page](https://github.com/pepa65/sds011/releases)
+
 ```
 sds011 0.2.1 - Manage SDS011 particulate matter sensors
 * Repo:      github.com/pepa65/sds011 <pepa65@passchier.net>
