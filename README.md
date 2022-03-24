@@ -1,7 +1,7 @@
 # sds011
 **Manage SDS011 particulate matter sensors**
 
-* **v0.2.2**
+* **v0.2.3**
 * Repo: [github.com/pepa65/sds011](https://github.com/pepa65/sds011)
 * After: [github.com/maker-bierzo/sds011](https://github.com/maker-bierzo/sds011)
 * Contact: pepa65 <pepa65@passchier.net>
@@ -12,7 +12,7 @@
 * Download from [Releases page](https://github.com/pepa65/sds011/releases)
 
 ```
-sds011 0.2.2 - Manage SDS011 particulate matter sensors
+sds011 0.2.3 - Manage SDS011 particulate matter sensors
 * Repo:      github.com/pepa65/sds011 <pepa65@passchier.net>
 * Usage:     sds011 [ARGUMENT...] [COMMAND]
   COMMAND:   set  active | query  |  wake | sleep  |  duty MINUTES  |  id ID
@@ -143,3 +143,4 @@ When `sensor.Track` is set to `true`, Get operations first try to access the req
 ### Limitations
 * There is no effective way to query the Wake/Sleep state, as all messages get ignored in Sleep state, except for setting a Wake state. If there is no response, it might be in Sleep state, or something else is not connecting. Any positive response is always from the Wake state.
 * All devices attached to the device interface are targeted for both Set and Get messages. Sensor devices could individually be set to different Device IDs, so their responses can be distinguished by sensor Device ID, but this is currently only supported for measurements, and displayed in Debug mode.
+

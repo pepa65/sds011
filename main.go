@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	version     = "0.2.2"
+	version     = "0.2.3"
 	active byte = 0
 	defdevice   = "/dev/ttyUSB0"
 	defspinup   = 10
@@ -94,7 +94,7 @@ func main() {
 		case "id":
 			idval, err = strconv.ParseUint(arg, 0, 0)
 			if err != nil || idval > 0xFFFF {
-				usage(green + "ID" + def + " must be " + green + "0x0000" + def + ".." + green + "0xFFFF" + def)
+				usage(cyan + "ID" + def + " must be " + cyan + "0x0000" + def + ".." + cyan + "0xFFFF" + def)
 			}
 			expect = ""
 			continue
@@ -229,7 +229,7 @@ func main() {
 		usage(green + "set " + yellow + "duty" + def + " must be followed by " + cyan + "0" + def + ".." + cyan + "30 MINUTES" + def)
 	}
 	if id && cmd == "set" && idval == 0xffff {
-		usage(green + "set " + yellow + "id" + def + " must be followed by " + green + "ID" + def)
+		usage(green + "set " + yellow + "id" + def + " must be followed by " + cyan + "ID" + def)
 	}
 	if !device {
 		deviceval = os.Getenv("SDS011_DEVICE")
@@ -272,7 +272,7 @@ func main() {
 				sensor.Sleep()
 			}
 			if verbose {
-				fmt.Printf("ID: %s%04X%s  pm2.5: %s%.1f%s  pm10: %s%.1f%s  [μg/m³]\n", green, m.ID, def, yellow, m.PM2_5, def, yellow, m.PM10, def)
+				fmt.Printf("ID: %s%04X%s  pm2.5: %s%.1f%s  pm10: %s%.1f%s  [μg/m³]\n", cyan, m.ID, def, yellow, m.PM2_5, def, yellow, m.PM10, def)
 			} else {
 				fmt.Printf("%04X,%.1f,%.1f\n", m.ID, m.PM2_5, m.PM10)
 			}
@@ -281,9 +281,9 @@ func main() {
 			sensor.Sleep()
 			if verbose {
 				if m == active {
-					fmt.Printf("Sensor %s%04X%s is in %sActive%s mode\n", green, sensor.Id, def, yellow, def)
+					fmt.Printf("Sensor %s%04X%s is in %sActive%s mode\n", cyan, sensor.Id, def, yellow, def)
 				} else {
-					fmt.Printf("Sensor %s%04X%s is in %sQuery%s mode\n", green, sensor.Id, def, yellow, def)
+					fmt.Printf("Sensor %s%04X%s is in %sQuery%s mode\n", cyan, sensor.Id, def, yellow, def)
 				}
 			} else {
 				fmt.Printf("%04X,%d\n", sensor.Id, m)
@@ -292,7 +292,7 @@ func main() {
 			m := sensor.GetDuty()
 			sensor.Sleep()
 			if verbose {
-				fmt.Printf("Sensor %s%04X%s has Duty cycle length %s%d%s\n", green, sensor.Id, def, cyan, m, def)
+				fmt.Printf("Sensor %s%04X%s has Duty cycle length %s%d%s\n", cyan, sensor.Id, def, cyan, m, def)
 			} else {
 				fmt.Printf("%04X,%d\n", sensor.Id, m)
 			}
@@ -300,7 +300,7 @@ func main() {
 			m := sensor.GetId()
 			sensor.Sleep()
 			if verbose {
-				fmt.Printf("Sensor at %s%s%s has ID %s%04X%s\n", cyan, deviceval, def, green, m, def)
+				fmt.Printf("Sensor at %s%s%s has ID %s%04X%s\n", cyan, deviceval, def, cyan, m, def)
 			} else {
 				fmt.Printf("%04X\n", m)
 			}
@@ -308,7 +308,7 @@ func main() {
 			m := sensor.GetFirmware()
 			sensor.Sleep()
 			if verbose {
-				fmt.Printf("Sensor %s%04X%s has Firmware version %s%s%s\n", green, sensor.Id, def, yellow, m, def)
+				fmt.Printf("Sensor %s%04X%s has Firmware version %s%s%s\n", cyan, sensor.Id, def, yellow, m, def)
 			} else {
 				fmt.Printf("%04X,%s\n", sensor.Id, m)
 			}
