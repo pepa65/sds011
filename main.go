@@ -10,49 +10,44 @@ import (
 )
 
 const (
-	version     = "0.2.0"
+	version     = "0.2.1"
 	red         = "\033[1m\033[31m"
 	green       = "\033[1m\033[32m"
 	yellow      = "\033[1m\033[33m"
-	blue        = "\033[1m\033[34m"
+	cyan        = "\033[1m\033[36m"
 	def         = "\033[0m"
-	get    byte = 0
-	set    byte = 1
-	sleep  byte = 0
-	wake   byte = 1
 	active byte = 0
-	query  byte = 1
+	defdevice   = "/dev/ttyUSB0"
 	defspinup   = 10
 )
 
 var (
 	self        string
-	dev                = "/dev/ttyUSB0"
 )
 
 func usage(msg string) {
-  help := self + " v" + version + ` - Manage SDS011 particulate matter sensors
-* Repo:      github.com/pepa65/sds011 <pepa65@passchier.net>
-* Usage:     ` + self + ` [ARGUMENT...] [COMMAND]
-  COMMAND:   set  active | query  |  wake | sleep  |  duty MINUTES  |  id ID
-             get  [ pm | mode | duty | id | firmware ]
+  help := green + self + " v" + version + def + ` - Manage SDS011 particulate matter sensors
+* ` + cyan + `Repo` + def + `:      ` + yellow + `github.com/pepa65/sds011` + def + ` <pepa65@passchier.net>
+* ` + cyan + `Usage` + def + `:     ` + self + ` [` + green + `ARGUMENT` + def + `...] [` + green + `COMMAND` + def + `]
+  ` + green + `COMMAND` + def + `:   ` + green + `set` + def + `  ` + yellow + `active` + def + ` | ` + yellow + `query` + def + `  |  ` + yellow + `wake` + def + ` | ` + yellow + `sleep` + def + `  |  ` + yellow + `duty ` + cyan + `MINUTES` + def + `  |  ` + yellow + `id ` + cyan + `ID` + def + `
+             ` + green + `get` + def + `  [ ` + yellow + `pm` + def + ` | ` + yellow + `mode` + def + ` | ` + yellow + `duty` + def + ` | ` + yellow + `id` + def + ` | ` + yellow + `firmware` + def + ` ]
                (All subcommands can be shortened by cutting of a tail end.)
-               For 'get', 'pm' is the default and can be omitted.
-               In Active mode, 'get pm' will wait for a measurement.
-               In Query mode, 'get pm' will get a measurement after ` + strconv.Itoa(defspinup) + ` seconds
-                 (unless -s/--spinup is used) and then put the sensor to Sleep
+               For ` + green + `get` + def + `, ` + yellow + `pm` + def + ` is the default and can be omitted.
+               In Active mode, ` + green + `get ` + yellow + `pm` + def + ` will wait for a measurement.
+               In Query mode, ` + green + `get ` + yellow + `pm` + def + ` will get a measurement after ` + cyan + strconv.Itoa(defspinup) + def + ` seconds
+                 (unless ` + yellow + `-s` + def + `/` + yellow + `--spinup` + def + ` is used) and then put the sensor to Sleep
                  (to preserver the service life of the laser: 8000 hours).
-             help                  Only show this help text (default command)
-  ARGUMENT:  -h|--help             Only show this help text
-             -d|--device DEVICE    DEVICE is '` + dev + `' by default
-             -s|--spinup SECONDS   Fan spinning before a measurement (0..30)
-             -v|--verbose          Human-readable output
-             -D|--debug            Show message passing to/from sensors
-      Environment variables SDS011_VERBOSE and SDS011_DEBUG can be set to '1',
-      and SDS011_DEVICE to the targetted DEVICE alternatively as well.`
+             ` + yellow + `help` + def + `                  Only show this help text (default command)
+  ` + yellow + `ARGUMENT` + def + `:  ` + yellow + `-h` + def + `|` + yellow + `--help` + def + `             Only show this help text
+             ` + yellow + `-d` + def + `|` + yellow + `--device ` + cyan + `DEVICE    DEVICE` + def + ` is ` + cyan + defdevice + def + ` by default
+             ` + yellow + `-s` + def + `|` + yellow + `--spinup ` + cyan + `SECONDS` + def + `   Fan spinning before a measurement (` + cyan + `0` + def + `..` + cyan + `30` + def + `)
+             ` + yellow + `-v` + def + `|` + yellow + `--verbose` + def + `          Human-readable output
+             ` + yellow + `-D` + def + `|` + yellow + `--debug` + def + `            Show message passing to/from sensors
+      Environment variables ` + green + `SDS011_VERBOSE` + def + ` and ` + green + `SDS011_DEBUG` + def + ` can be set to ` + cyan + `1` + def + `,
+      and ` + green + `SDS011_DEVICE` + def + ` to the targetted ` + cyan + `DEVICE` + def + ` alternatively as well.`
 	fmt.Println(help)
 	if msg != "" {
-		fmt.Printf("ERROR: %s\n", msg)
+		fmt.Printf("%sERROR%s: %s\n", red, def, msg)
 		os.Exit(1)
 	}
 	os.Exit(0)
@@ -76,7 +71,7 @@ func main() {
 		case "device":
 			_, err = os.Stat(arg)
 			if err != nil {
-				usage("DEVICE " + arg + " not accessible")
+				usage("DEVICE " + cyan + arg + def + " not accessible")
 			}
 			deviceval = arg
 			expect = ""
@@ -84,21 +79,21 @@ func main() {
 		case "minutes":
 			dutyval, err = strconv.Atoi(arg)
 			if err != nil || dutyval < 0 || dutyval > 30 {
-				usage("MINUTES must be 0..30")
+				usage(cyan + "MINUTES " + def + "must be " +cyan + "0" + def + ".." + cyan + "30" + def)
 			}
 			expect = ""
 			continue
 		case "spinup":
 			spinupval, err = strconv.Atoi(arg)
 			if err != nil || spinupval < 0 || spinupval > 30 {
-				usage("SECONDS must be 0..30")
+				usage(cyan + "SECONDS" + def + " must be " + cyan + "0" + def + ".." + cyan + "30" + def)
 			}
 			expect = ""
 			continue
 		case "id":
 			idval, err = strconv.ParseUint(arg, 0, 0)
 			if err != nil || idval > 0xFFFF {
-				usage("ID must be 0x0000..0xFFFF")
+				usage(green + "ID" + def + " must be " + green + "0x0000" + def + ".." + green + "0xFFFF" + def)
 			}
 			expect = ""
 			continue
@@ -132,7 +127,7 @@ func main() {
 				cmd = arg
 				continue
 			}
-			usage("Command should be 'get' or 'set', not '" + arg + "'")
+			usage(green + "COMMAND" + def + " should be " + green + "get" + def + " or " + green + "set" + def + ", not " + red + arg + def)
 		}
 		if subcmd == "" {
 			// Subcommands for either primary command
@@ -153,28 +148,28 @@ func main() {
 			// Subcommands for set
 			if strings.HasPrefix("active", arg) {
 				if cmd != "set" {
-					usage("'active' can only be used after 'set'")
+					usage(yellow + "active" + def + " can only be used after " + green + "set" + def)
 				}
 				subcmd = "active"
 				continue
 			}
 			if strings.HasPrefix("query", arg) {
 				if cmd != "set" {
-					usage("'query' can only be used after 'set'")
+					usage(yellow + "query" + def + " can only be used after " + green + "set" + def)
 				}
 				subcmd = "query"
 				continue
 			}
 			if strings.HasPrefix("wake", arg) {
 				if cmd != "set" {
-					usage("'wake' can only be used after 'set'")
+					usage(yellow + "wake" + def + " can only be used after " + green + "set" + def)
 				}
 				subcmd = "wake"
 				continue
 			}
 			if strings.HasPrefix("sleep", arg) {
 				if cmd != "set" {
-					usage("'sleep' can only be used after 'set'")
+					usage(yellow + "sleep" + def + " can only be used after " + green + "set" + def)
 				}
 				subcmd = "sleep"
 				continue
@@ -182,28 +177,28 @@ func main() {
 			// Subcommands for get
 			if strings.HasPrefix("pm", arg) {
 				if cmd != "get" {
-					usage("'pm' can only be used after 'get'")
+					usage(yellow + "pm" + def + " can only be used after " + green + "get" +def)
 				}
 				subcmd = "pm"
 				continue
 			}
 			if strings.HasPrefix("mode", arg) {
 				if cmd != "get" {
-					usage("'mode' can only be used after 'get'")
+					usage(yellow + "mode" + def + " can only be used after " + green + "get" +def)
 				}
 				subcmd = "mode"
 				continue
 			}
 			if strings.HasPrefix("firmware", arg) {
 				if cmd != "get" {
-					usage("'firmware' can only be used after 'get'")
+					usage(yellow + "firmware" + def + " can only be used after " + green + "get" + def)
 				}
 				subcmd = "firmware"
 				continue
 			}
-			usage("Unrecognized subcommand or argument: '" + arg + "'")
+			usage("Unrecognized subcommand or argument: " + red + arg + def)
 		} else { // cmd and subcommand given
-			usage("Unrecognised argument: '" + arg + "'")
+			usage("Unrecognised argument: " + red + arg + def)
 		}
 	} // end for
 
@@ -211,31 +206,31 @@ func main() {
 		usage("")
 	}
 	if cmd == "set" && subcmd == "" {
-		usage("Can't use 'set' without subcommand")
+		usage("Can't use " + green + "set" + def + " without " + yellow + "subcommand" + def)
 	}
 	if cmd == "get" && subcmd == "" {
 		subcmd = "pm"
 	}
 	if device && deviceval == "" {
-		usage("-d/--device must be followed by a DEVICE")
+		usage(yellow + "-d" + def + "/" + yellow + "--device" + def + " must be followed by a " + cyan + "DEVICE" + def)
 	}
 	if spinup && spinupval == -1 {
-		usage("-s/--spinup must be followed by 0..30 SECONDS")
+		usage(yellow + "-s" + def + "/" + yellow + "--spinup" + def + " must be followed by " + cyan + "0" + def + ".." + cyan + "30 SECONDS" + def)
 	}
 	if spinupval == -1 {
 		spinupval = defspinup
 	}
 	if duty && dutyval == -1 {
-		usage("'set duty' must be followed by 0..30 MINUTES")
+		usage(green + "set " + yellow + "duty" + def + " must be followed by " + cyan + "0" + def + ".." + cyan + "30 MINUTES" + def)
 	}
 	if id && cmd == "set" && idval == 0xffff {
-		usage("'set id' must be followed by ID")
+		usage(green + "set " + yellow + "id" + def + " must be followed by " + green + "ID" + def)
 	}
 	if !device {
 		deviceval = os.Getenv("SDS011_DEVICE")
 	}
 	if deviceval == "" {
-		deviceval = dev
+		deviceval = defdevice
 	}
 	if os.Getenv("SDS011_VERBOSE") == "1" {
 		verbose = true
@@ -259,12 +254,12 @@ func main() {
 			if mode == active {
 				if verbose {
 					d := sensor.GetDuty()
-					fmt.Printf("Active mode, cycle length %d minutes\n", d)
+					fmt.Printf("%sActive%s mode, cycle length %s%d%s minutes\n", yellow, def, cyan, def, d)
 				}
 				m = sensor.Poll()
 			} else {
 				if verbose {
-					fmt.Printf("Query mode, spinup length %d seconds\n", spinupval)
+					fmt.Printf("%sQuery%s mode, spinup length %s%d%s seconds\n", yellow, def, cyan, def, spinupval)
 				}
 				secs := time.Duration(spinupval) * time.Second
 				time.Sleep(secs)
@@ -272,7 +267,7 @@ func main() {
 				sensor.Sleep()
 			}
 			if verbose {
-				fmt.Printf("ID: %04X  pm2.5: %.1f  pm10: %.1f  [μg/m³]\n", m.ID, m.PM2_5, m.PM10)
+				fmt.Printf("ID: %s%04X%s  pm2.5: %s%.1f%s  pm10: %s%.1f%s  [μg/m³]\n", green, m.ID, def, yellow, m.PM2_5, def, yellow, m.PM10, def)
 			} else {
 				fmt.Printf("%04X,%.1f,%.1f\n", m.ID, m.PM2_5, m.PM10)
 			}
@@ -280,10 +275,10 @@ func main() {
 			m := sensor.GetMode()
 			sensor.Sleep()
 			if verbose {
-				if m == query {
-					fmt.Printf("Sensor %04X is in Query mode\n", sensor.Id)
+				if m == active {
+					fmt.Printf("Sensor %s%04X%s is in %sActive%s mode\n", green, sensor.Id, def, yellow, def)
 				} else {
-					fmt.Printf("Sensor %04X is in Active mode\n", sensor.Id)
+					fmt.Printf("Sensor %s%04X%s is in %sQuery%s mode\n", green, sensor.Id, def, yellow, def)
 				}
 			} else {
 				fmt.Printf("%04X,%d\n", sensor.Id, m)
@@ -292,7 +287,7 @@ func main() {
 			m := sensor.GetDuty()
 			sensor.Sleep()
 			if verbose {
-				fmt.Printf("Sensor %04X has Duty cycle length %d\n", sensor.Id, m)
+				fmt.Printf("Sensor %s%04X%s has Duty cycle length %s%d%s\n", green, sensor.Id, def, cyan, m, def)
 			} else {
 				fmt.Printf("%04X,%d\n", sensor.Id, m)
 			}
@@ -300,7 +295,7 @@ func main() {
 			m := sensor.GetId()
 			sensor.Sleep()
 			if verbose {
-				fmt.Printf("Sensor at %s has ID %04X\n", deviceval, m)
+				fmt.Printf("Sensor at %s%s%s has ID %s%04X%s\n", cyan, deviceval, def, green, m, def)
 			} else {
 				fmt.Printf("%04X\n", m)
 			}
@@ -308,7 +303,7 @@ func main() {
 			m := sensor.GetFirmware()
 			sensor.Sleep()
 			if verbose {
-				fmt.Printf("Sensor %04X has Firmware version %s\n", sensor.Id, m)
+				fmt.Printf("Sensor %s%04X%s has Firmware version %s%s%s\n", green, sensor.Id, def, yellow, m, def)
 			} else {
 				fmt.Printf("%04X,%s\n", sensor.Id, m)
 			}

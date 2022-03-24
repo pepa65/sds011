@@ -1,7 +1,7 @@
 # sds011
 **Manage SDS011 particulate matter sensors**
 
-* **v0.2.0**
+* **v0.2.1**
 * Repo: [github.com/pepa65/sds011](https://github.com/pepa65/sds011)
 * After: [github.com/maker-bierzo/sds011](https://github.com/maker-bierzo/sds011)
 * Contact: pepa65 <pepa65@passchier.net>
@@ -10,7 +10,7 @@
 
 ## CLI app usage
 ```
-sds011 0.1.0 - Manage SDS011 particulate matter sensors
+sds011 0.2.1 - Manage SDS011 particulate matter sensors
 * Repo:      github.com/pepa65/sds011 <pepa65@passchier.net>
 * Usage:     sds011 [ARGUMENT...] [COMMAND]
   COMMAND:   set  active | query  |  wake | sleep  |  duty MINUTES  |  id ID
