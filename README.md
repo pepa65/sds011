@@ -1,7 +1,7 @@
 # sds011
 **Manage SDS011 particulate matter sensors**
 
-* **v0.2.1**
+* **v0.2.2**
 * Repo: [github.com/pepa65/sds011](https://github.com/pepa65/sds011)
 * After: [github.com/maker-bierzo/sds011](https://github.com/maker-bierzo/sds011)
 * Contact: pepa65 <pepa65@passchier.net>
@@ -12,7 +12,7 @@
 * Download from [Releases page](https://github.com/pepa65/sds011/releases)
 
 ```
-sds011 0.2.1 - Manage SDS011 particulate matter sensors
+sds011 0.2.2 - Manage SDS011 particulate matter sensors
 * Repo:      github.com/pepa65/sds011 <pepa65@passchier.net>
 * Usage:     sds011 [ARGUMENT...] [COMMAND]
   COMMAND:   set  active | query  |  wake | sleep  |  duty MINUTES  |  id ID
@@ -27,6 +27,7 @@ sds011 0.2.1 - Manage SDS011 particulate matter sensors
   ARGUMENT:  -h|--help             Only show this help text
              -d|--device DEVICE    DEVICE is '/dev/ttyUSB0' by default
              -v|--verbose          Human-readable output
+             -n|--nocolor          No ANSI color codes in output
              -D|--debug            Show message passing to/from sensors
       Environment variables SDS011_VERBOSE and SDS011_DEBUG can be set to '1',
       and SDS011_DEVICE to the targetted DEVICE alternatively as well.

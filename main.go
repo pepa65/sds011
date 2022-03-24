@@ -10,19 +10,19 @@ import (
 )
 
 const (
-	version     = "0.2.1"
-	red         = "\033[1m\033[31m"
-	green       = "\033[1m\033[32m"
-	yellow      = "\033[1m\033[33m"
-	cyan        = "\033[1m\033[36m"
-	def         = "\033[0m"
+	version     = "0.2.2"
 	active byte = 0
 	defdevice   = "/dev/ttyUSB0"
 	defspinup   = 10
 )
 
 var (
-	self        string
+	self string
+	red         = "\033[1m\033[31m"
+	green       = "\033[1m\033[32m"
+	yellow      = "\033[1m\033[33m"
+	cyan        = "\033[1m\033[36m"
+	def         = "\033[0m"
 )
 
 func usage(msg string) {
@@ -41,6 +41,7 @@ func usage(msg string) {
   ` + yellow + `ARGUMENT` + def + `:  ` + yellow + `-h` + def + `|` + yellow + `--help` + def + `             Only show this help text
              ` + yellow + `-d` + def + `|` + yellow + `--device ` + cyan + `DEVICE    DEVICE` + def + ` is ` + cyan + defdevice + def + ` by default
              ` + yellow + `-s` + def + `|` + yellow + `--spinup ` + cyan + `SECONDS` + def + `   Fan spinning before a measurement (` + cyan + `0` + def + `..` + cyan + `30` + def + `)
+             ` + yellow + `-n` + def + `|` + yellow + `--nocolor` + def + `          No ANSI color codes in output
              ` + yellow + `-v` + def + `|` + yellow + `--verbose` + def + `          Human-readable output
              ` + yellow + `-D` + def + `|` + yellow + `--debug` + def + `            Show message passing to/from sensors
       Environment variables ` + green + `SDS011_VERBOSE` + def + ` and ` + green + `SDS011_DEBUG` + def + ` can be set to ` + cyan + `1` + def + `,
@@ -112,6 +113,10 @@ func main() {
 		}
 		if arg == "-v" || arg == "--verbose" {
 			verbose = true
+			continue
+		}
+		if arg == "-n" || arg == "--nocolor" {
+			red, cyan, yellow, green, def = "", "", "", "", ""
 			continue
 		}
 		if arg == "-D" || arg == "--debug" {
