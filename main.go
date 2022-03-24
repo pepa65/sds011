@@ -17,12 +17,13 @@ const (
 )
 
 var (
-	self string
-	red         = "\033[1m\033[31m"
-	green       = "\033[1m\033[32m"
-	yellow      = "\033[1m\033[33m"
-	cyan        = "\033[1m\033[36m"
-	def         = "\033[0m"
+	self      string
+	spinupval int    = -1
+	red              = "\033[1m\033[31m"
+	green            = "\033[1m\033[32m"
+	yellow           = "\033[1m\033[33m"
+	cyan             = "\033[1m\033[36m"
+	def              = "\033[0m"
 )
 
 func usage(msg string) {
@@ -30,14 +31,14 @@ func usage(msg string) {
 * ` + cyan + `Repo` + def + `:      ` + yellow + `github.com/pepa65/sds011` + def + ` <pepa65@passchier.net>
 * ` + cyan + `Usage` + def + `:     ` + self + ` [` + green + `ARGUMENT` + def + `...] [` + green + `COMMAND` + def + `]
   ` + green + `COMMAND` + def + `:   ` + green + `set` + def + `  ` + yellow + `active` + def + ` | ` + yellow + `query` + def + `  |  ` + yellow + `wake` + def + ` | ` + yellow + `sleep` + def + `  |  ` + yellow + `duty ` + cyan + `MINUTES` + def + `  |  ` + yellow + `id ` + cyan + `ID` + def + `
-             ` + green + `get` + def + `  [ ` + yellow + `pm` + def + ` | ` + yellow + `mode` + def + ` | ` + yellow + `duty` + def + ` | ` + yellow + `id` + def + ` | ` + yellow + `firmware` + def + ` ]
+             ` + green + `get` + def + `  [` + yellow + `pm` + def + `] | ` + yellow + `mode` + def + ` | ` + yellow + `duty` + def + ` | ` + yellow + `id` + def + ` | ` + yellow + `firmware` + def + `
                (All subcommands can be shortened by cutting of a tail end.)
-               For ` + green + `get` + def + `, ` + yellow + `pm` + def + ` is the default and can be omitted.
+               For ` + green + `get` + def + `, ` + yellow + `pm` + def + ` is the default subcommand and can be omitted.
                In Active mode, ` + green + `get ` + yellow + `pm` + def + ` will wait for a measurement.
-               In Query mode, ` + green + `get ` + yellow + `pm` + def + ` will get a measurement after ` + cyan + strconv.Itoa(defspinup) + def + ` seconds
+               In Query mode, ` + green + `get ` + yellow + `pm` + def + ` will get a measurement after ` + cyan + strconv.Itoa(spinupval) + def + ` seconds
                  (unless ` + yellow + `-s` + def + `/` + yellow + `--spinup` + def + ` is used) and then put the sensor to Sleep
                  (to preserver the service life of the laser: 8000 hours).
-             ` + yellow + `help` + def + `                  Only show this help text (default command)
+             [` + green + `help` + def + `]                Only show this help text (default command)
   ` + yellow + `ARGUMENT` + def + `:  ` + yellow + `-h` + def + `|` + yellow + `--help` + def + `             Only show this help text
              ` + yellow + `-d` + def + `|` + yellow + `--device ` + cyan + `DEVICE    DEVICE` + def + ` is ` + cyan + defdevice + def + ` by default
              ` + yellow + `-s` + def + `|` + yellow + `--spinup ` + cyan + `SECONDS` + def + `   Fan spinning before a measurement (` + cyan + `0` + def + `..` + cyan + `30` + def + `)
@@ -57,15 +58,15 @@ func usage(msg string) {
 func main() {
 	var err error
 	var idval uint64 = 0xFFFF
-	spinupval, dutyval, device, spinup, verbose, debug, id, duty := -1, -1, false, false, false, false, false, false
+	dutyval, device, spinup, verbose, debug, id, duty := -1, false, false, false, false, false, false
 	cmd, subcmd, expect, deviceval := "", "", "", ""
 	for _, arg := range os.Args {
 		if self == "" { // Get binary name (arg0)
 			selves := strings.Split(arg, "/")
 			self = selves[len(selves)-1]
-			if len(os.Args) == 1 {
+			/*if len(os.Args) == 1 {
 				usage("")
-			}
+			}*/
 			continue
 		}
 		switch expect {
@@ -126,9 +127,6 @@ func main() {
 		// Primary commands
 		if cmd == "" {
 			if arg == "get" || arg == "set" || arg == "help" {
-				if cmd == "help" {
-					usage("")
-				}
 				cmd = arg
 				continue
 			}
@@ -208,7 +206,7 @@ func main() {
 	} // end for
 
 	if cmd == "" {
-		usage("")
+		cmd = "help"
 	}
 	if cmd == "set" && subcmd == "" {
 		usage("Can't use " + green + "set" + def + " without " + yellow + "subcommand" + def)
@@ -243,6 +241,9 @@ func main() {
 	if os.Getenv("SDS011_DEBUG") == "1" {
 		debug = true
 	}
+	if cmd == "help" {
+		usage("")
+	}
 
 	sensor := sds011.Sensor(deviceval)
 	if debug {
@@ -259,7 +260,7 @@ func main() {
 			if mode == active {
 				if verbose {
 					d := sensor.GetDuty()
-					fmt.Printf("%sActive%s mode, cycle length %s%d%s minutes\n", yellow, def, cyan, def, d)
+					fmt.Printf("%sActive%s mode, cycle length %s%d%s minutes\n", yellow, def, cyan, d, def)
 				}
 				m = sensor.Poll()
 			} else {
