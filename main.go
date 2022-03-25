@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	version        = "0.2.5"
+	version        = "0.2.6"
 	defDevice      = "/dev/ttyUSB0"
 	defSpinup      = 10
 	active    byte = 0

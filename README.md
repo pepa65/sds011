@@ -1,8 +1,8 @@
 # sds011
 **Manage SDS011 particulate matter sensor through CLI or golang librarys**
 
-* CLI app: **v0.2.5**
-* Library: **v0.2.0**
+* CLI app: **v0.2.6**
+* Library: **v0.2.1**
 * Repo: [github.com/pepa65/sds011](https://github.com/pepa65/sds011)
 * After: [github.com/maker-bierzo/sds011](https://github.com/maker-bierzo/sds011)
 * Contact: pepa65 <pepa65@passchier.net>
@@ -13,7 +13,7 @@
 * Download from [Releases page](https://github.com/pepa65/sds011/releases)
 
 ```
-sds011 v0.2.5 - Manage SDS011 particulate matter sensors
+sds011 v0.2.6 - Manage SDS011 particulate matter sensors
 * Repo:      github.com/pepa65/sds011 <pepa65@passchier.net>
 * Usage:     sds011 [ARGUMENT...] [COMMAND]
   COMMAND:   help            Only show this help text (default command)
@@ -72,7 +72,7 @@ import "github.com/pepa65/sds011/lib"
 
 Create a sensor object to interact with the sensor:
 ```go
-sensor := sds011.NewSensor()
+sensor := sds011.Sensor()
 ```
 
 Unless you know the device is a Wake state, wake it up:
@@ -113,7 +113,7 @@ In Active mode, measurements need to be read from a [channel](https://gobyexampl
 measurements := sensor.Channel()
 for true {
 	m := <- measurements
-	fmt.Printf("ID: %X  pm2.5: %f  pm10: %f  [μg/m³]\n", m.ID, m.PM2_5, m.PM10)
+	fmt.Printf("ID: %04X  pm2.5: %.1f  pm10: %.1f  [μg/m³]\n", m.ID, m.PM2_5, m.PM10)
 }
 ```
 
@@ -153,3 +153,32 @@ When `sensor.Track` is set to `true`, Get operations first try to access the req
 * There is no effective way to query the Wake/Sleep state, as all messages get ignored in Sleep state, except for setting a Wake state. If there is no response, it might be in Sleep state, or something else is not connecting. Any positive response is always from the Wake state.
 * All devices attached to the device interface are targeted for both Set and Get messages. Sensor devices could individually be set to different Device IDs, so their responses can be distinguished by sensor Device ID, but this is currently only supported for measurements, and displayed in Debug mode.
 
+### Complete example
+```
+package main
+
+import (
+  "fmt"
+  "github.com/pepa65/sds011/lib"
+)
+
+func main() {
+  sensor := sds011.Sensor()
+  sensor.Wake()
+  sensor.SetActive()
+  sensor.SetDuty(1)
+  fmt.Printf("ID: %04X  Firmware version: %s\n", sensor.Id, sensor.GetFirmware())
+
+  measurements := sensor.Channel()
+  var t2_5, t10 float32
+  n := 10
+  for i := 0 ; i < n; i += 1 {
+    m := <- measurements
+    t2_5 += m.PM2_5
+    t10 += m.PM10
+    fmt.Printf("   pm2.5:  %3.1f   pm10: %3.1f   [μg/m³]\n", m.PM2_5, m.PM10)
+  }
+  sensor.Sleep()
+  fmt.Printf("Average:   %3.2f        %3.2f  [μg/m³]\n", t2_5/float32(n), t10/float32(n))
+}
+```

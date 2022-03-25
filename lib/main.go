@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	version       = "0.2.0"
+	version       = "0.2.1"
 	ff            = 0xFF
 	baud          = 9600   // Specified baud rate
 	head          = 0xAA   // Start of message
@@ -20,8 +20,8 @@ const (
 	anyid         = 0xFFFF // Any ID matches
 	get      byte = 0      // Ask to get/read value
 	set      byte = 1      // Ask to set/write value
-	asleep   byte = 0      // Sleep state
-	awake    byte = 1      // Wake state
+	sleep    byte = 0      // Sleep state
+	wake     byte = 1      // Wake state
 	active   byte = 0      // Sensor periodically measures automatically: Channel()
 	query    byte = 1      // Sensor only measures when requested: Query()
 	modeCmd  byte = 2
@@ -219,6 +219,11 @@ func (sensor *sensor) Get(command byte, args []byte) byte {
 func (sensor *sensor) Set(command byte, args []byte) {
 	// command: modeCmd, stateCmd, dutyCmd
 	sensor.write(command, args)
+	if command == stateCmd && args[0] == set && args[1] == sleep {
+		sensor.State = sleep
+		return
+	}
+
 	response := sensor.read()
 	for response[0] != head || response[1] != ack || response[2] != command || response[9] != tail || checksum(response[2:8]) != response[8] {
 		response = sensor.read()
@@ -270,11 +275,11 @@ func (sensor *sensor) GetState() byte {
 }
 
 func (sensor *sensor) Sleep() {
-	sensor.Set(stateCmd, []byte{set, asleep})
+	sensor.Set(stateCmd, []byte{set, sleep})
 }
 
 func (sensor *sensor) Wake() {
-	sensor.Set(stateCmd, []byte{set, awake})
+	sensor.Set(stateCmd, []byte{set, wake})
 }
 
 func (sensor *sensor) GetFirmware() string {
