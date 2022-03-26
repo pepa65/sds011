@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	version        = "0.2.6"
+	version        = "0.2.7"
 	defDevice      = "/dev/ttyUSB0"
 	defSpinup      = 10
 	active    byte = 0
@@ -197,11 +197,26 @@ func main() {
 		}
 	} // end for
 
-	if cmd == "" {
-		cmd = "help"
+	if os.Getenv("SDS011_VERBOSE") == "1" {
+		verbose = true
+	}
+	if os.Getenv("SDS011_DEBUG") == "1" {
+		debug = true
+	}
+	if os.Getenv("SDS011_NOCOLOR") == "1" {
+		red, cyan, yellow, green, def = "", "", "", "", ""
+	}
+	if cmd == "" || cmd == "help" {
 	}
 	if getDevice && device == "" {
 		usage(yellow + "-d" + def + "/" + yellow + "--device" + def + " must be followed by a " + cyan + "DEVICE" + def)
+	}
+	deviceEnv := os.Getenv("SDS011_DEVICE")
+	if !getDevice && deviceEnv != "" {
+		device = checkDevice(deviceEnv)
+	}
+	if device == "" {
+		device = defDevice
 	}
 	if getSpinup && !spinupSet {
 		usage(yellow + "-s" + def + "/" + yellow + "--spinup" + def + " must be followed by " + cyan + "0" + def + ".." + cyan + "30 SECONDS" + def)
@@ -217,27 +232,11 @@ func main() {
 	if getSpinup && cmd != "pm" && verbose {
 		fmt.Println("Setting " + yellow + "spinup" + def + " time only relevant for " + green + "pm" + def + " command in Passive mode")
 	}
-	if os.Getenv("SDS011_NOCOLOR") == "1" {
-		red, cyan, yellow, green, def = "", "", "", "", ""
-	}
-	deviceEnv := os.Getenv("SDS011_DEVICE")
-	if !getDevice && deviceEnv != "" {
-		device = checkDevice(deviceEnv)
-	}
 	if cmd == "duty" && duty == -1 {
 		cmd = "getduty"
 	}
 	if cmd == "id" && id == 0x11111 {
 		cmd = "getid"
-	}
-	if device == "" {
-		device = defDevice
-	}
-	if os.Getenv("SDS011_VERBOSE") == "1" {
-		verbose = true
-	}
-	if os.Getenv("SDS011_DEBUG") == "1" {
-		debug = true
 	}
 
 	sensor := sds011.Sensor(device)
@@ -246,8 +245,6 @@ func main() {
 	}
 	sensor.Wake()
 	switch cmd {
-	case "help":
-		usage("")
 	case "pm":
 		mode := sensor.GetMode()
 		var m *sds011.Measurement

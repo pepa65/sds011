@@ -1,7 +1,7 @@
 # sds011
 **Manage SDS011 particulate matter sensor through CLI or golang librarys**
 
-* CLI app: **v0.2.6**
+* CLI app: **v0.2.7**
 * Library: **v0.2.1**
 * Repo: [github.com/pepa65/sds011](https://github.com/pepa65/sds011)
 * After: [github.com/maker-bierzo/sds011](https://github.com/maker-bierzo/sds011)
@@ -13,7 +13,7 @@
 * Download from [Releases page](https://github.com/pepa65/sds011/releases)
 
 ```
-sds011 v0.2.6 - Manage SDS011 particulate matter sensors
+sds011 v0.2.7 - Manage SDS011 particulate matter sensors
 * Repo:      github.com/pepa65/sds011 <pepa65@passchier.net>
 * Usage:     sds011 [ARGUMENT...] [COMMAND]
   COMMAND:   help            Only show this help text (default command)
