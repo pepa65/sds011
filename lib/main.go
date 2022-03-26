@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	version       = "0.2.1"
+	version       = "0.2.2"
 	ff            = 0xFF
 	baud          = 9600   // Specified baud rate
 	head          = 0xAA   // Start of message
@@ -151,6 +151,9 @@ func (sensor *sensor) write(command byte, args []byte) {
 	}
 	_, err := sensor.conn.Write(message.Bytes())
 	for err != nil {
+		if sensor.Debug {
+			fmt.Printf("[O: %x]\n", message.Bytes())
+		}
 		_, err = sensor.conn.Write(message.Bytes())
 	}
 }
