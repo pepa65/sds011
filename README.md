@@ -2,7 +2,7 @@
 **Manage SDS011 particulate matter sensor through CLI or golang librarys**
 
 * CLI app: **v0.2.7**
-* Library: **v0.2.1**
+* Library: **v0.2.2**
 * Repo: [github.com/pepa65/sds011](https://github.com/pepa65/sds011)
 * After: [github.com/maker-bierzo/sds011](https://github.com/maker-bierzo/sds011)
 * Contact: pepa65 <pepa65@passchier.net>
