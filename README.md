@@ -1,5 +1,5 @@
 # sds011
-**Manage SDS011 particulate matter sensor through CLI or golang librarys**
+**Manage SDS011 particulate matter sensor through CLI or golang library**
 
 * CLI app: **v0.2.7**
 * Library: **v0.2.2**
