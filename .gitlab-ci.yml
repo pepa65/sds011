@@ -1,0 +1,22 @@
+image: golang:latest
+
+stages:
+  - build
+
+building:
+  stage: build
+  script:
+    - go get -u github.com/pepa65/sds011
+    - GOOS=linux GOARCH=amd64 go build -ldflags="-s -w"
+    - GOOS=linux GOARCH=arm go build -ldflags="-s -w" -o sds011_pi
+    - GOOS=freebsd GOARCH=amd64 go build -ldflags="-s -w" -o sds011_bsd
+    - GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -o sds011_osx
+    - GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o sds011.exe
+  artifacts:
+    name: sds011
+    paths:
+     - sds011
+     - sds011_pi
+     - sds011_bsd
+     - sds011_osx
+     - sds011.exe
