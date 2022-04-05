@@ -149,10 +149,6 @@ When `sensor.Track` is set to `true`, Get operations first try to access the req
 * `.GetDuty()` -> `byte` - Get Duty cycle length [0:every 1.004 second, 1..30:every n minutes]
 * `.SetDuty(byte)` - Set Duty cycle length (values over 30 get ignored)
 
-### Limitations
-* There is no effective way to query the Wake/Sleep state, as all messages get ignored in Sleep state, except for setting a Wake state. If there is no response, it might be in Sleep state, or something else is not connecting. Any positive response is always from the Wake state.
-* All devices attached to the device interface are targeted for both Set and Get messages. Sensor devices could individually be set to different Device IDs, so their responses can be distinguished by sensor Device ID, but this is currently only supported for measurements, and displayed in Debug mode.
-
 ### Complete example
 ```
 package main
@@ -182,3 +178,8 @@ func main() {
   fmt.Printf("Average:   %3.2f        %3.2f  [μg/m³]\n", t2_5/float32(n), t10/float32(n))
 }
 ```
+
+### Limitations
+* There is no effective way to query the Wake/Sleep state, as all messages get ignored in Sleep state, except for setting a Wake state. If there is no response, it might be in Sleep state, or something else is not connecting. Any positive response is always from the Wake state.
+* All devices attached to the device interface are targeted for both Set and Get messages. Sensor devices could individually be set to different Device IDs, so their responses can be distinguished by sensor Device ID, but this is currently only supported for measurements, and displayed in Debug mode.
+* If there is some other access on the same device interface, responsiveness cannot be guaranteed.
